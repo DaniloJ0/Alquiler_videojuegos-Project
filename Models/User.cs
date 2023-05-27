@@ -26,7 +26,7 @@ public partial class User
 
     [ForeignKey("IdClient")]
     [InverseProperty("Users")]
-    public virtual Client IdClientNavigation { get; set; } = null!;
+    public virtual Client? IdClientNavigation { get; set; }
 
     [InverseProperty("IdUserNavigation")]
     public virtual ICollection<Rent> Rents { get; set; } = new List<Rent>();

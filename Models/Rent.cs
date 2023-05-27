@@ -30,9 +30,9 @@ public partial class Rent
 
     [ForeignKey("IdGame")]
     [InverseProperty("Rents")]
-    public virtual Game IdGameNavigation { get; set; } = null!;
+    public virtual Game? IdGameNavigation { get; set; }
 
     [ForeignKey("IdUser")]
     [InverseProperty("Rents")]
-    public virtual User IdUserNavigation { get; set; } = null!;
+    public virtual User? IdUserNavigation { get; set; }
 }
