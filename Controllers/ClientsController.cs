@@ -27,25 +27,23 @@ namespace Alquiler_videojuegos.Controllers
             return await _context.Clients.ToListAsync();
         }
 
-        // GET: api/Clients/Best
-        [HttpGet("Best")]
-        public async Task<ActionResult> GetBest()
+        // GET: api/Clients/masFrecuente
+        [HttpGet("masFrecuente")]
+        public async Task<ActionResult> GetmasFrecuente()
         {
             var clientes = _context.Clients;
-
+            
             var usuarios = _context.Users;
             var rentas = _context.Rents;
-            var query = await (from rentados in (from u in (from b in
-                                       (from r in rentas group r by r.IdUser into grp select new { IdUser = grp.Key, Rentas = grp.Count() })
-                                                            orderby b.Rentas descending
-                                                            select (b)
-                                   )
-                                                 join us in usuarios on u.IdUser equals us.IdUser
-                                                 select new { u.IdUser, u.Rentas, us.IdClient })
-                               join cli in clientes on rentados.IdClient equals cli.IdClient
-                               select new { rentados.IdUser, cli.FirstName, cli.LastName, cli.Email, cli.Age, cli.Address, cli.Birthday, rentados.Rentas }).FirstAsync()
+            var query = await (from rentados in (from u in (from b in 
+                                       (from r in rentas group r by r.IdUser into grp select new {IdUser=grp.Key,Rentas=grp.Count()}) 
+                                   orderby b.Rentas descending select(b)
+                                   ) 
+                        join us in usuarios on u.IdUser equals us.IdUser
+                        select new {u.IdUser,u.Rentas,us.IdClient})
+                        join cli in clientes on rentados.IdClient equals cli.IdClient select new {rentados.IdUser,cli.FirstName,cli.LastName,cli.Email,cli.Age,cli.Address,cli.Birthday,rentados.Rentas}).FirstAsync()
                         ;
-
+            
             return Ok(query);
         }
 
@@ -69,6 +67,7 @@ namespace Alquiler_videojuegos.Controllers
         }
 
         // PUT: api/Clients/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutClient(int id, Client client)
         {

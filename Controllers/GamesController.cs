@@ -56,10 +56,8 @@ namespace Alquiler_videojuegos.Controllers
             var primerquery = from c in clientes join us in usuarios on c.IdClient equals us.IdClient select new { IdClient = c.IdClient, IdUser = us.IdUser, age = c.Age };
             var segundoquery = from r in rentas join pr in primerquery on r.IdUser equals pr.IdUser select new { Age = pr.age, IdGame = r.IdGame };
             var tercerquery = await (from g in juegos join se in segundoquery on g.IdGame equals se.IdGame select new { age = se.Age, name = g.Name, rango = (se.Age / 10) * 10 }).OrderBy(x => x.rango).ToArrayAsync();
-            //List<MenosRentado> mr =await (Task<List<MenosRentado>>)tercerquery.Select(x => new MenosRentado(x.name, x.rango, x.age)).ToListAsync();
             if (tercerquery.Length == 0)
                 return NoContent();
-            //var primero = new MenosRentado(quin.title, quin.rango, quin.frecuencia);
             List<MenosRentado> resultado = new List<MenosRentado>();
 
             for (var i = 0; i < 12; i++)
@@ -129,45 +127,6 @@ namespace Alquiler_videojuegos.Controllers
             }
 
         }
-
-
-        [HttpPut("Precio")]
-        public async Task<IActionResult> PutGame(CambioPrecio cambio)
-        {
-
-            try
-            {
-                var juegos = _context.Games;
-                var cambiar = await juegos.Where(x => x.IdGame == cambio.IdGame).FirstOrDefaultAsync();
-                cambiar.RentalPrice = cambio.RentalPrice;
-                juegos.Update(cambiar);
-
-                //_context.Entry(cambiar).State = EntityState.Modified;
-
-            }
-            catch (Exception e)
-            {
-                return BadRequest();
-            }
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GameExists(cambio.IdGame))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
 
         // PUT: api/Games/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
